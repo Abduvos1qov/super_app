@@ -13,6 +13,7 @@ workspace:
   - packages/feature_taxi
   - packages/feature_food
   - packages/feature_delivery
+  - packages/feature_driver
   - apps/passenger_app
   - apps/driver_app
 

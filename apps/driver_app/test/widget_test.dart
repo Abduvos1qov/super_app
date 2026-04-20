@@ -1,4 +1,4 @@
-import 'package:driver_app/features/home/driver_home_screen.dart';
+import 'package:feature_driver/feature_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

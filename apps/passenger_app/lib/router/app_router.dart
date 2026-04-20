@@ -1,4 +1,5 @@
 import 'package:feature_delivery/feature_delivery.dart';
+import 'package:feature_driver/feature_driver.dart';
 import 'package:feature_food/feature_food.dart';
 import 'package:feature_taxi/feature_taxi.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: DeliveryFeature.route,
         name: 'delivery',
         builder: (context, state) => DeliveryFeature.buildEntry(),
+      ),
+      GoRoute(
+        path: DriverFeature.route,
+        name: 'driver',
+        builder: (context, state) => DriverFeature.buildEntry(),
       ),
     ],
   );

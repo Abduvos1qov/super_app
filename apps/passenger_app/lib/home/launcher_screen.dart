@@ -1,4 +1,5 @@
 import 'package:feature_delivery/feature_delivery.dart';
+import 'package:feature_driver/feature_driver.dart';
 import 'package:feature_food/feature_food.dart';
 import 'package:feature_taxi/feature_taxi.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,11 @@ class LauncherScreen extends StatelessWidget {
         route: DeliveryFeature.route,
         label: DeliveryFeature.label,
         icon: Icons.delivery_dining,
+      ),
+      _Service(
+        route: DriverFeature.route,
+        label: DriverFeature.label,
+        icon: Icons.drive_eta,
       ),
     ];
 

@@ -6,7 +6,7 @@ import 'package:shared_ui/shared_ui.dart';
 
 void main() {
   group('LauncherScreen', () {
-    testWidgets('renders Taxi, Food, and Delivery service cards', (tester) async {
+    testWidgets('renders Taxi, Food, Delivery, and Driver service cards', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -19,6 +19,7 @@ void main() {
       expect(find.text('Taxi'), findsOneWidget);
       expect(find.text('Food'), findsOneWidget);
       expect(find.text('Delivery'), findsOneWidget);
+      expect(find.text('Driver'), findsOneWidget);
     });
   });
 }
