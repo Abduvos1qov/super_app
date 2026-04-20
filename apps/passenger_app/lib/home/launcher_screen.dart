@@ -43,7 +43,7 @@ class LauncherScreen extends StatelessWidget {
             for (final service in services)
               _ServiceCard(
                 service: service,
-                onTap: () => context.go(service.route),
+                onTap: () => context.push(service.route),
               ),
           ],
         ),
