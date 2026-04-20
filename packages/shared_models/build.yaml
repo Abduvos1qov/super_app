@@ -1,0 +1,12 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        enabled: true
+      json_serializable:
+        enabled: true
+        options:
+          explicit_to_json: true
+          field_rename: snake
+          create_to_json: true
+          create_factory: true

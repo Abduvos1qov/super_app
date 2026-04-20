@@ -1,0 +1,19 @@
+name: core
+description: Pure Dart core for the ride-hailing monorepo (errors, money, pricing, logging).
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  collection: ^1.19.0
+  decimal: ^3.0.2
+  logger: ^2.5.0
+  meta: ^1.16.0
+  timezone: ^0.9.4
+
+dev_dependencies:
+  test: ^1.25.15
+  very_good_analysis: ^7.0.0

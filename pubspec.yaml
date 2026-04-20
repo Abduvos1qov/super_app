@@ -1,0 +1,20 @@
+name: super_app_workspace
+description: Ride-hailing monorepo workspace root (not a publishable package).
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/core
+  - packages/shared_models
+  - packages/shared_services
+  - packages/shared_ui
+  - packages/feature_taxi
+  - packages/feature_food
+  - packages/feature_delivery
+  - apps/passenger_app
+  - apps/driver_app
+
+dev_dependencies:
+  melos: ^7.5.0

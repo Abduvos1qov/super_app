@@ -1,0 +1,36 @@
+name: super_app
+
+packages:
+  - packages/*
+  - apps/*
+
+command:
+  bootstrap:
+    runPubGetInParallel: false
+
+scripts:
+  analyze:
+    description: Run `dart analyze` across every workspace package.
+    run: melos exec -c 1 --fail-fast -- "dart analyze --fatal-infos"
+
+  format:
+    description: Format every Dart file in the workspace.
+    run: melos exec -c 1 -- "dart format --set-exit-if-changed ."
+
+  test:
+    description: Run tests in every package that has a `test/` directory.
+    run: melos exec -c 1 --fail-fast --dir-exists=test -- "flutter test"
+
+  gen:
+    description: Run build_runner in every package that depends on it.
+    run: melos exec -c 1 --depends-on=build_runner -- "dart run build_runner build --delete-conflicting-outputs"
+
+  gen:watch:
+    description: Watch-mode codegen.
+    run: melos exec -c 1 --depends-on=build_runner -- "dart run build_runner watch --delete-conflicting-outputs"
+
+  clean:
+    description: Delete build artifacts per package, then clear Melos state.
+    run: |
+      melos exec -c 1 -- "flutter clean"
+      melos clean
