@@ -1,0 +1,25 @@
+name: auth
+description: Session controller, OTP sign-in flow, and secure token storage for the super-app platform.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core: any
+  mini_app_sdk: any
+  shared_models: any
+  storage: any
+  networking: any
+  meta: ^1.15.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^7.0.0

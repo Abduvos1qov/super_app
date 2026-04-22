@@ -7,12 +7,15 @@ environment:
 
 workspace:
   - packages/analytics
+  - packages/auth
   - packages/core
   - packages/event_bus
+  - packages/feature_flags
   - packages/mini_app_registry
   - packages/mini_app_sdk
   - packages/mini_apps/demo_mini_app
   - packages/networking
+  - packages/permissions
   - packages/shared_models
   - packages/shared_services
   - packages/shared_ui
