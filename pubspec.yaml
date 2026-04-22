@@ -20,7 +20,6 @@ workspace:
   - packages/payments
   - packages/permissions
   - packages/shared_models
-  - packages/shared_services
   - packages/shared_ui
   - packages/storage
   - apps/super_app

@@ -12,10 +12,22 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  analytics: any
+  auth: any
   core: any
+  deep_links: any
+  event_bus: any
+  feature_flags: any
+  mini_app_registry: any
+  mini_app_sdk: any
+  networking: any
+  notifications: any
+  payments: any
+  permissions: any
   shared_models: any
-  shared_services: any
   shared_ui: any
+  storage: any
+  demo_mini_app: any
   flutter_riverpod: ^2.6.1
   go_router: ^14.6.2
   riverpod_annotation: ^2.6.1
