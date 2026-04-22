@@ -19,17 +19,16 @@ Prefer pattern matching over manual type checks:
 
 ```dart
 // Good
-final result = switch (trip.status) {
-  TripStatus.requested => 'Finding driver…',
-  TripStatus.enroute => 'Driver on the way',
-  TripStatus.completed => 'Trip complete',
-  _ => 'Unknown',
+final label = switch (session) {
+  SessionAnonymous() => 'Sign in to continue',
+  SessionLoading() => 'Restoring your session…',
+  SessionAuthenticated(:final user) => 'Welcome back, ${user.displayName}',
 };
 
 // Avoid
-String getLabel(TripStatus s) {
-  if (s == TripStatus.requested) return 'Finding driver…';
-  if (s == TripStatus.enroute) return 'Driver on the way';
+String getLabel(SessionState s) {
+  if (s is SessionAnonymous) return 'Sign in to continue';
+  if (s is SessionLoading) return 'Restoring your session…';
   // ...
 }
 ```
@@ -62,9 +61,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:core/core.dart';
+import 'package:mini_app_sdk/mini_app_sdk.dart';
 import 'package:shared_ui/shared_ui.dart';
 
-import '../widgets/fare_display.dart';
+import '../widgets/order_summary_card.dart';
 ```
 
 ## Async
@@ -103,3 +103,4 @@ import '../widgets/fare_display.dart';
 - `var` at class-level — use `final` or explicit type
 - `context.read` inside `build()` methods — use `ref.watch`
 - `setState` in stateful widgets when a Riverpod provider would do the job
+- Importing a platform service package (`auth`, `networking`, `payments`, …) from a mini-app — mini-apps only see the abstract interface through `MiniAppContext`

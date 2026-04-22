@@ -9,13 +9,14 @@ These rules apply only when working inside `packages/shared_ui/`.
 
 ## The One Rule
 
-**shared_ui is a pure presentation layer.** Violating this rule is worse than any other violation in this repo, because it corrupts the dependency graph and forces business logic into widgets across the company.
+**shared_ui is a pure presentation layer.** Violating this rule is worse than any other violation in this repo, because it corrupts the dependency graph and forces business logic into widgets across every mini-app.
 
 ## Forbidden in shared_ui
 
 - ❌ `import 'package:dio/...'` or any HTTP library
-- ❌ `import 'package:shared_preferences/...'` or any storage
-- ❌ `import 'package:shared_services/...'` — services belong in apps, not UI
+- ❌ `import 'package:shared_preferences/...'`, `flutter_secure_storage`, or any storage
+- ❌ `import 'package:auth/...'`, `package:networking/...`, `package:payments/...`, or any other platform service package
+- ❌ `import 'package:mini_app_sdk/...'` — shared_ui is lower in the graph than the SDK
 - ❌ `import 'package:flutter_riverpod/...'` — widgets here must be framework-agnostic
 - ❌ Async work, timers, streams
 - ❌ Navigation (`Navigator`, `go_router`) — emit callbacks instead
@@ -36,21 +37,25 @@ These rules apply only when working inside `packages/shared_ui/`.
 
 ```dart
 // Good
-class RideCard extends StatelessWidget {
-  const RideCard({
-    required this.trip,
-    required this.onTap,
+class OrderSummaryCard extends StatelessWidget {
+  const OrderSummaryCard({
+    required this.total,
+    required this.onConfirm,
     this.isLoading = false,
     super.key,
   });
+
+  final Money total;
+  final VoidCallback onConfirm;
+  final bool isLoading;
   // ...
 }
 
 // Bad — widget fetches its own data
-class RideCard extends ConsumerWidget {
+class OrderSummaryCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final trip = ref.watch(currentTripProvider); // ❌
+    final total = ref.watch(currentOrderTotalProvider); // ❌
   }
 }
 ```
@@ -60,6 +65,7 @@ class RideCard extends ConsumerWidget {
 - All colors come from `AppTheme.colors.*`. Never `Color(0xFF...)` in widget code.
 - All spacing uses `AppSpacing.md`, `AppSpacing.lg`, etc. Never raw numbers.
 - All text styles come from `AppTheme.typography.*`. Never inline `TextStyle(...)`.
+- All border radii come from `AppRadii.*`. Never raw `BorderRadius.circular(12)`.
 - Dark mode is not optional. Every widget must look correct in both themes.
 
 ## Examples & Goldens
@@ -82,4 +88,4 @@ class RideCard extends ConsumerWidget {
 
 ## Before Adding a Widget
 
-Ask: is this widget used (or likely to be used) in 2+ apps? If only one app uses it, it belongs in that app's `lib/widgets/`, not in `shared_ui`. Moving to `shared_ui` is a deliberate promotion, not a default.
+Ask: is this widget used (or likely to be used) in 2+ mini-apps or in shell chrome? If only one mini-app uses it, it belongs in that mini-app's `presentation/widgets/`, not in `shared_ui`. Moving to `shared_ui` is a deliberate promotion, not a default.

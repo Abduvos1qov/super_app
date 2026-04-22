@@ -1,16 +1,22 @@
 # super_app
 
-A new Flutter project.
+Flutter monorepo for a **general-purpose super-app platform**. One shell hosts many independently-developed mini-apps through a single, well-typed contract.
 
-## Getting Started
+- Architecture overview: [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+- Day-to-day monorepo workflow: [`README_monorepo.md`](./README_monorepo.md)
+- First-time setup and onboarding: [`SETUP.md`](./SETUP.md)
+- Assistant guidance (Claude Code): [`CLAUDE.md`](./CLAUDE.md)
 
-This project is a starting point for a Flutter application.
+## Quick start
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
+melos bootstrap
+melos run analyze
+melos run test
+cd apps/super_app && flutter run
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## License
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Proprietary. All rights reserved.

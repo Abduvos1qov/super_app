@@ -1,6 +1,6 @@
-# Ride-Hailing Monorepo
+# Super-App Platform Monorepo
 
-Flutter monorepo for a ride-hailing platform. Three apps, four shared packages, one codebase.
+Flutter monorepo for a general-purpose super-app platform. One shell, many mini-apps, a handful of shared packages, one codebase.
 
 ## Prerequisites
 
@@ -12,8 +12,8 @@ Flutter monorepo for a ride-hailing platform. Three apps, four shared packages, 
 
 ```bash
 # 1. Clone and enter the repo
-git clone <your-repo-url> ride_hailing_monorepo
-cd ride_hailing_monorepo
+git clone <your-repo-url> super_app
+cd super_app
 
 # 2. Install dependencies (Dart workspaces does the heavy lifting)
 flutter pub get
@@ -26,40 +26,48 @@ melos run analyze
 melos run test
 ```
 
-## Running Apps
+## Running the Shell
 
 ```bash
-# Rider app (mobile)
-cd apps/rider_app && flutter run
-
-# Driver app (mobile)
-cd apps/driver_app && flutter run
-
-# Admin web (browser)
-cd apps/admin_web && flutter run -d chrome
+cd apps/super_app
+flutter run            # iOS simulator / Android emulator
+flutter run -d chrome  # web (if web target is enabled)
 ```
 
 ## Repository Structure
 
 ```
-ride_hailing_monorepo/
+super_app/
 ├── CLAUDE.md                 # AI assistant instructions (Claude Code)
 ├── ARCHITECTURE.md           # Architectural deep-dive
-├── README.md                 # You are here
+├── README.md                 # Short project intro
+├── README_monorepo.md        # You are here
+├── SETUP.md                  # Onboarding walkthrough
 ├── pubspec.yaml              # Workspace root config
 ├── melos.yaml                # Scripts and orchestration
 ├── analysis_options.yaml     # Lint rules for the whole repo
 ├── .claude/
 │   └── rules/                # Path-scoped rules for Claude Code
 ├── apps/
-│   ├── rider_app/            # Passenger mobile app
-│   ├── driver_app/           # Driver mobile app
-│   └── admin_web/            # Operations web dashboard
+│   └── super_app/            # The shell (iOS + Android)
 └── packages/
-    ├── core/                 # Pure Dart business logic
-    ├── shared_models/        # Domain models (freezed)
-    ├── shared_services/      # API, auth, storage, location
-    └── shared_ui/            # Design system
+    ├── core/                 # Pure Dart primitives
+    ├── shared_models/        # Cross-domain freezed models
+    ├── shared_ui/            # Design system
+    ├── mini_app_sdk/         # Shell <-> mini-app contract
+    ├── mini_app_registry/    # Discovery + gating
+    ├── auth/                 # SessionController implementation
+    ├── networking/           # NetworkGateway implementation
+    ├── storage/              # StorageScope implementation
+    ├── analytics/            # AnalyticsTracker implementation
+    ├── feature_flags/        # FeatureFlagService implementation
+    ├── payments/             # PaymentGateway implementation
+    ├── notifications/        # NotificationRouter implementation
+    ├── deep_links/           # DeepLinkDispatcher implementation
+    ├── permissions/          # PermissionBroker implementation
+    ├── event_bus/            # AppEventBus implementation
+    └── mini_apps/
+        └── demo_mini_app/    # Reference mini-app (copy this)
 ```
 
 ## Daily Workflow
@@ -68,7 +76,7 @@ ride_hailing_monorepo/
 |------|---------|
 | Install/update deps | `flutter pub get` |
 | Run all tests | `melos run test` |
-| Test one package | `melos exec --scope="core" -- flutter test` |
+| Test one package | `melos exec --scope="<name>" -- flutter test` |
 | Static analysis | `melos run analyze` |
 | Format code | `melos run format` |
 | Run codegen (freezed, riverpod) | `melos run gen` |
@@ -77,16 +85,16 @@ ride_hailing_monorepo/
 
 ## Git Workflow
 
-This repo uses **Conventional Commits**. Melos parses these for automatic versioning and changelog generation.
+The repo uses **Conventional Commits**. Melos parses them for automatic versioning and changelogs.
 
 Examples:
 
-- `feat(rider): add saved places` → minor version bump
-- `fix(shared_ui): correct dark-mode contrast on PrimaryButton` → patch
-- `feat!: rename User.id to User.uuid` → major (breaking)
-- `chore: bump dio to 5.4.0`
-- `docs(architecture): clarify dependency rules`
-- `test(core): add boundary cases for FareCalculator`
+- `feat(mini_apps/demo_mini_app): add empty state to home` — minor bump
+- `fix(networking): retry 5xx responses with exponential backoff` — patch
+- `feat(mini_app_sdk)!: rename MiniApp.build to MiniApp.buildRoot` — major (breaking)
+- `chore: bump dio to 5.5.0`
+- `docs(architecture): clarify platform-service surface`
+- `test(core): add boundary cases for Money.format`
 
 Branch naming: `feat/<scope>/<slug>`, `fix/<scope>/<slug>`, `chore/<slug>`.
 
@@ -100,27 +108,28 @@ melos run format
 
 ## Adding a New Package
 
-1. Create the directory under `packages/` (or elsewhere if it's app-specific)
-2. Run `dart create --template=package .` (or `flutter create --template=package .` if it needs Flutter)
-3. In the package's `pubspec.yaml`, add:
-   ```yaml
-   resolution: workspace
-   ```
-4. Register the path in the root `pubspec.yaml` under `workspace:`
-5. From root: `flutter pub get`
-6. Add a `CLAUDE.md` to the new package with its rules and scope
+1. Create the directory under `packages/` (or `packages/mini_apps/` for a vertical).
+2. Run `dart create --template=package .` (or `flutter create --template=package .` if it needs Flutter).
+3. In the package's `pubspec.yaml` add `resolution: workspace`.
+4. Register the path in the root `pubspec.yaml` under `workspace:`.
+5. From repo root: `flutter pub get`.
+6. Add a `CLAUDE.md` to the new package with its rules and scope.
+
+For a **new mini-app**, copy `packages/mini_apps/demo_mini_app/` and register it in `apps/super_app/lib/bootstrap/mini_app_registry_provider.dart`. See `CLAUDE.md` → "How to Add a New Mini-App" for the full recipe.
+
+For a **new platform service**, define an abstract interface in `mini_app_sdk` first. See `CLAUDE.md` → "How to Add a New Platform Service".
 
 ## Working with Claude Code
 
-This repo is optimized for Claude Code. The `CLAUDE.md` files at every level teach the assistant about architecture, conventions, and rules.
+This repo is optimized for Claude Code. `CLAUDE.md` files at every level teach the assistant about architecture, conventions, and rules.
 
-To get started with Claude Code in this repo:
+To start Claude Code in this repo:
 
 ```bash
 claude   # from the monorepo root
 ```
 
-Claude will automatically load:
+Claude automatically loads:
 
 - Root `CLAUDE.md` (always)
 - Root `.claude/rules/*.md` (always, unless path-scoped)

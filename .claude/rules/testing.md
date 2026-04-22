@@ -11,30 +11,26 @@ These rules apply to all test files.
 
 ## File & Test Naming
 
-- Test files mirror source: `lib/src/fare_calculator.dart` → `test/src/fare_calculator_test.dart`
-- Test descriptions use active voice: `test('returns zero for zero distance', ...)` not `test('test zero', ...)`
+- Test files mirror source: `lib/src/visibility_evaluator.dart` → `test/visibility_evaluator_test.dart`
+- Test descriptions use active voice: `test('returns fallback when key is missing', ...)` not `test('test missing', ...)`
 - Group related tests: one `group()` per class/function under test
 
 ## Structure
 
 ```dart
 void main() {
-  group('FareCalculator', () {
-    late FareCalculator sut; // system under test
-
-    setUp(() {
-      sut = FareCalculator();
+  group('Money.format', () {
+    test('formats USD with 2 decimals', () {
+      expect(Money.usd(9.99).format(), '9.99 \$');
     });
 
-    test('returns base fare for minimum distance', () {
-      final result = sut.calculate(distanceKm: 0.5);
-      expect(result, equals(5000)); // 5000 UZS minimum
+    test('formats UZS with 0 decimals', () {
+      expect(Money.uzs(12500).format(), '12 500 UZS');
     });
 
-    group('when distance exceeds 10km', () {
-      test('applies long-distance discount', () {
-        final result = sut.calculate(distanceKm: 15);
-        expect(result, lessThan(15 * 2500));
+    group('when symbol is suppressed', () {
+      test('prints the numeric amount only', () {
+        expect(Money.usd(1.5).format(symbol: false), '1.50');
       });
     });
   });
@@ -48,21 +44,33 @@ void main() {
 - Register fallback values in `setUpAll()` for custom types
 
 ```dart
-class MockApiClient extends Mock implements ApiClient {}
+class MockNetworkGateway extends Mock implements NetworkGateway {}
 
 void main() {
   setUpAll(() {
-    registerFallbackValue(const TripRequest.empty());
+    registerFallbackValue(
+      const CheckoutRequest(
+        amount: Money.usd(0),
+        items: [],
+      ),
+    );
   });
 
   // tests...
 }
 ```
 
+## Test doubles over mocks
+
+Every platform service package ships an `InMemory*` implementation of its
+abstract interface (`InMemorySecureStorage`, `InMemoryPaymentGateway`,
+`InMemoryAnalyticsTracker`, …). Prefer these over `mocktail` when available:
+they enforce behavioral contracts and survive interface evolution.
+
 ## Widget Tests
 
 - Every screen needs a smoke test that verifies it renders without crashing with default providers
-- Use `ProviderScope(overrides: [...])` to inject fake providers
+- Use `ProviderScope(overrides: [...])` to inject fake providers — or swap the `MiniAppContext` for a fake
 - Use `pumpAndSettle()` only when you have animations; prefer explicit `pump()` with duration
 
 ## Golden Tests (shared_ui only)
@@ -75,9 +83,9 @@ void main() {
 ## Integration Tests
 
 - Live in `integration_test/` at each app root, not in `test/`
-- Cover critical flows only: book-a-ride, accept-a-ride, login, payment
+- Cover critical flows only: launcher → mini-app entry, sign-in, payment checkout, deep-link dispatch
 - Use realistic test data, not lorem ipsum
-- Run against a local mock server, not production
+- Run against in-memory platform service implementations, not production backends
 
 ## What NOT to Test
 
@@ -88,6 +96,6 @@ void main() {
 
 ## Coverage
 
-- Target 80%+ line coverage in `core`, `shared_services`, `shared_models`
-- Target 60%+ in apps (UI-heavy code is harder to cover meaningfully)
+- Target 80%+ line coverage in `core`, `shared_models`, and every platform service package
+- Target 60%+ in mini-apps and the shell (UI-heavy code is harder to cover meaningfully)
 - Do not game coverage — a test that imports a file without asserting anything is worse than no test
