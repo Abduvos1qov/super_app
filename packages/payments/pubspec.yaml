@@ -1,0 +1,23 @@
+name: payments
+description: Vendor-agnostic PaymentGateway — checkout, wallet balance, payment-method management. Vendor adapters (Click, Payme, Stripe) live in separate packages.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  core: any
+  flutter:
+    sdk: flutter
+  meta: ^1.15.0
+  mini_app_sdk: any
+  shared_models: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^7.0.0
