@@ -1,9 +1,12 @@
 import 'package:demo_mini_app/demo_mini_app.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_mini_app/food_mini_app.dart';
 import 'package:mini_app_registry/mini_app_registry.dart';
 import 'package:mini_app_sdk/mini_app_sdk.dart';
-
+import 'package:shipments_mini_app/shipments_mini_app.dart';
 import 'package:super_app/providers/platform_providers.dart';
+import 'package:taxi_mini_app/taxi_mini_app.dart';
+import 'package:wallet_mini_app/wallet_mini_app.dart';
 
 /// Compile-time list of [MiniApp]s shipped with this build of the shell.
 ///
@@ -13,7 +16,13 @@ import 'package:super_app/providers/platform_providers.dart';
 /// enforces id uniqueness at review time; a dynamic install pipeline is
 /// future work.
 final miniAppRegistryProvider = Provider<MiniAppRegistry>((ref) {
-  return const MiniAppRegistry(<MiniApp>[DemoMiniApp()]);
+  return const MiniAppRegistry(<MiniApp>[
+    DemoMiniApp(),
+    FoodMiniApp(),
+    WalletMiniApp(),
+    TaxiMiniApp(),
+    ShipmentsMiniApp(),
+  ]);
 });
 
 /// Mini-apps currently visible to the user.

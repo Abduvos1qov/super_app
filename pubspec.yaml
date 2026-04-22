@@ -15,6 +15,10 @@ workspace:
   - packages/mini_app_registry
   - packages/mini_app_sdk
   - packages/mini_apps/demo_mini_app
+  - packages/mini_apps/food_mini_app
+  - packages/mini_apps/shipments_mini_app
+  - packages/mini_apps/taxi_mini_app
+  - packages/mini_apps/wallet_mini_app
   - packages/networking
   - packages/notifications
   - packages/payments

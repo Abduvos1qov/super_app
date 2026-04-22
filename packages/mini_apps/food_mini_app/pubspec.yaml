@@ -1,0 +1,28 @@
+name: food_mini_app
+description: Food ordering mini-app — placeholder vertical showing how a food delivery experience plugs into the super-app shell.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  core: any
+  flutter:
+    sdk: flutter
+  meta: ^1.15.0
+  mini_app_sdk: any
+  shared_models: any
+  shared_ui: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^7.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon.svg
