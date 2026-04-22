@@ -1,4 +1,4 @@
-package com.example.superapp
+package com.abdulbosit.superapp
 
 import io.flutter.embedding.android.FlutterActivity
 
