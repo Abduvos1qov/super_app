@@ -1,0 +1,24 @@
+name: networking
+description: Dio-based ApiClient + NetworkGateway implementation with auth, logging, retry interceptors.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  core: any
+  dio: ^5.7.0
+  flutter:
+    sdk: flutter
+  meta: ^1.15.0
+  mini_app_sdk: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  logger: ^2.4.0
+  mocktail: ^1.0.4
+  very_good_analysis: ^7.0.0

@@ -1,0 +1,23 @@
+name: storage
+description: Secure storage and preferences with per-mini-app namespacing.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  core: any
+  flutter:
+    sdk: flutter
+  flutter_secure_storage: ^9.2.2
+  meta: ^1.15.0
+  mini_app_sdk: any
+  shared_preferences: ^2.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^7.0.0

@@ -6,13 +6,17 @@ environment:
   sdk: ^3.6.0
 
 workspace:
+  - packages/analytics
   - packages/core
+  - packages/event_bus
   - packages/mini_app_registry
   - packages/mini_app_sdk
   - packages/mini_apps/demo_mini_app
+  - packages/networking
   - packages/shared_models
   - packages/shared_services
   - packages/shared_ui
+  - packages/storage
   - apps/super_app
 
 dev_dependencies:
