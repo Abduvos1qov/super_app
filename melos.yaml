@@ -34,3 +34,7 @@ scripts:
     run: |
       melos exec -c 1 -- "flutter clean"
       melos clean
+
+  check:imports:
+    description: Verify mini-apps only import allowed packages.
+    run: dart run tool/check_mini_app_imports.dart

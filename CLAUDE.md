@@ -60,7 +60,7 @@ For the dependency graph, platform-service interfaces, mini-app lifecycle, routi
 These rules prevent the platform from rotting as verticals multiply. Never violate them without explicit approval.
 
 1. **Shell and mini-app communicate only through `mini_app_sdk`.** A mini-app never imports a platform service package directly; it receives a `MiniAppContext` holding the interfaces it needs.
-2. **Mini-app package dependencies are strictly limited** to: `core`, `shared_models`, `shared_ui`, `mini_app_sdk`. Importing `packages/networking`, `packages/auth`, `packages/payments`, etc. from a mini-app is **forbidden**.
+2. **Mini-app package dependencies are strictly limited** to: `core`, `shared_models`, `shared_ui`, `mini_app_sdk`. Importing `packages/networking`, `packages/auth`, `packages/payments`, etc. from a mini-app is **forbidden**. This is enforced by `dart run tool/check_mini_app_imports.dart`; CI fails on violation.
 3. **Platform service packages implement abstract interfaces** declared in `mini_app_sdk`. The implementation is injected at shell bootstrap time.
 4. **Every mini-app is self-contained** with `data/`, `domain/`, `application/`, `presentation/` layers. No cross-mini-app imports.
 5. **`shared_ui` is dumb**: zero network, zero storage, zero business logic, zero provider reads. UI primitives only.
@@ -87,6 +87,7 @@ Always use these from the repo root. Do not invent alternatives.
 | Watch codegen | `melos run gen:watch` |
 | Run the shell app (debug) | `cd apps/super_app && flutter run` |
 | Clean everything | `melos run clean` |
+| Check mini-app import graph | `dart run tool/check_mini_app_imports.dart` |
 
 Before any commit: `melos run analyze && melos run test`.
 
