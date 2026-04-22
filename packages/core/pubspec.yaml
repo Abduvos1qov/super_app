@@ -1,5 +1,5 @@
 name: core
-description: Pure Dart core for the ride-hailing monorepo (errors, money, pricing, logging).
+description: Pure Dart core primitives for the super-app monorepo (errors, money, logging).
 publish_to: none
 version: 0.1.0
 resolution: workspace

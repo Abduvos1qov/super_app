@@ -1,0 +1,21 @@
+name: mini_app_sdk
+description: Contract between the super-app shell and mini-apps. Defines MiniApp, MiniAppContext, MiniAppManifest, and platform service interfaces.
+publish_to: none
+version: 0.1.0
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  core: any
+  flutter:
+    sdk: flutter
+  meta: ^1.15.0
+  shared_models: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^7.0.0

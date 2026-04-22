@@ -1,10 +1,15 @@
 # shared_models Package
 
-Domain models used across the entire system. Immutable. JSON-serializable.
+Cross-vertical domain models used across the entire super-app shell.
+Immutable. JSON-serializable.
 
 ## Purpose
 
-Single source of truth for what a `User`, `Trip`, `Driver`, `Vehicle`, `Payment` looks like. When the backend contract changes, this is the only package that needs to change.
+Single source of truth for identity and other concepts that every mini-app
+shares (User, Address, Money). Feature-specific models — ride trips, food
+orders, parcel deliveries, merchant storefronts — live **inside each
+mini-app's own package**, not here. When the super-app backend changes a
+cross-vertical contract, this is the only package that needs to change.
 
 ## Contents
 
@@ -12,31 +17,33 @@ Single source of truth for what a `User`, `Trip`, `Driver`, `Vehicle`, `Payment`
 lib/
 ├── shared_models.dart            // barrel
 ├── src/
-│   ├── actors/                   // User, Rider, Driver, Admin
-│   ├── trip/                     // Trip, TripStatus, Waypoint
-│   ├── vehicle/                  // Vehicle, VehicleType, LicensePlate
-│   ├── payment/                  // Payment, PaymentMethod, Fare
-│   ├── location/                 // Location, Route, BoundingBox
-│   └── common/                   // pagination envelopes, enums
+│   ├── actors/                   // User, AccountRole, KycLevel
+│   └── common/                   // (future) pagination envelopes, enums
 ```
+
+Other cross-vertical models (Address, Money wrappers if not in `core`) land
+under their own folder as they are introduced. Do NOT add vertical-specific
+models here — reject that in review and push them into the mini-app package.
 
 ## Rules
 
 - **Every model uses freezed** — `@freezed` class, `factory _.fromJson`
 - **Every field is `final`** (freezed enforces this)
 - **Every model has exhaustive JSON round-trip tests**: `Model.fromJson(model.toJson())` equals the original
-- **Enums use `@JsonEnum(alwaysCreate: true)`** so unknown values decode to a fallback, not throw
-- **Actors are a sealed union**:
-  ```dart
-  @freezed
-  sealed class User with _$User {
-    const factory User.rider({...}) = Rider;
-    const factory User.driver({...}) = Driver;
-    const factory User.admin({...}) = Admin;
-  }
-  ```
+- **Enums use `@JsonEnum(alwaysCreate: true)`** and each enum has an
+  `unknown` variant. Fields reference it with
+  `@JsonKey(unknownEnumValue: MyEnum.unknown)` so unseen backend values decode
+  to the fallback instead of throwing.
 - **Dates are `DateTime` in UTC**. Apps convert to Tashkent time for display using `core`'s helpers.
 - **Money fields use `Money` from `core`**, never raw `int` or `double`.
+
+## Scope (what belongs here vs. a mini-app)
+
+- In: `User`, `AccountRole`, `KycLevel`, `Address`, shared pagination/error
+  envelopes, anything more than one mini-app reads.
+- Out: anything specific to one vertical. A `RideTrip`, `FoodOrder`,
+  `ParcelShipment`, or `MerchantPayout` belongs inside that mini-app's
+  package, not here.
 
 ## Dependencies
 

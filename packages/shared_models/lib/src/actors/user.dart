@@ -1,37 +1,38 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:shared_models/src/actors/account_role.dart';
+import 'package:shared_models/src/actors/kyc_level.dart';
+
 part 'user.freezed.dart';
 part 'user.g.dart';
 
-/// Admin permission roles. Unknown decodes to [AdminRole.unknown] instead of
-/// throwing — the `alwaysCreate` option generates a resilient enum decoder.
-@JsonEnum(alwaysCreate: true)
-enum AdminRole { ops, finance, superadmin, unknown }
-
-/// Sealed union of every actor type in the system. Apps pattern-match on
-/// variants instead of branching on string discriminators.
-@Freezed(unionKey: 'type')
-sealed class User with _$User {
-  const factory User.rider({
+/// Domain-neutral identity used across every mini-app in the super-app.
+///
+/// The super-app shell owns one [User] object per authenticated session.
+/// Mini-apps (ride, food, parcel, …) read it to personalise flows but MUST
+/// NOT extend it with vertical-specific fields. Vertical data (ride rating,
+/// merchant payout account, …) lives inside each mini-app's own package.
+///
+/// [roles] is a [Set] because a single person can simultaneously act as a
+/// consumer and an operator (e.g. a driver who also orders food).
+@freezed
+class User with _$User {
+  /// Creates a [User] with the given identity fields.
+  const factory User({
     required String id,
     required String phone,
     required String displayName,
+    String? email,
     String? avatarUrl,
-  }) = Rider;
+    @Default(<AccountRole>{AccountRole.consumer})
+    @JsonKey(unknownEnumValue: AccountRole.unknown)
+    Set<AccountRole> roles,
+    @Default(KycLevel.none)
+    @JsonKey(unknownEnumValue: KycLevel.unknown)
+    KycLevel kycLevel,
+    @Default(false) bool isActive,
+  }) = _User;
 
-  const factory User.driver({
-    required String id,
-    required String phone,
-    required String displayName,
-    required String licenseNumber,
-    @Default(0.0) double rating,
-  }) = Driver;
-
-  const factory User.admin({
-    required String id,
-    required String email,
-    @Default(AdminRole.unknown) AdminRole role,
-  }) = Admin;
-
+  /// Decodes a [User] from its JSON representation.
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }

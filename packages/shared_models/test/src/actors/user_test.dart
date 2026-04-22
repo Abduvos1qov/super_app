@@ -2,53 +2,121 @@ import 'package:shared_models/shared_models.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('User JSON round-trip', () {
-    test('Rider survives serialization', () {
-      const rider = User.rider(
-        id: 'r1',
-        phone: '+998900000000',
-        displayName: 'Demo Rider',
-        avatarUrl: 'https://example.test/a.png',
-      );
-      final decoded = User.fromJson(rider.toJson());
-      expect(decoded, equals(rider));
-    });
-
-    test('Driver survives serialization', () {
-      const driver = User.driver(
-        id: 'd1',
-        phone: '+998900000001',
-        displayName: 'Demo Driver',
-        licenseNumber: 'AA1234BB',
-        rating: 4.8,
-      );
-      final decoded = User.fromJson(driver.toJson());
-      expect(decoded, equals(driver));
-    });
-
-    test('Admin with unknown role decodes safely', () {
-      final decoded = User.fromJson(<String, dynamic>{
-        'type': 'admin',
-        'id': 'a1',
-        'email': 'ops@example.test',
-        'role': 'nonexistent_role',
+  group('User', () {
+    group('defaults', () {
+      test('assigns {consumer} as default role set', () {
+        const user = User(
+          id: 'u1',
+          phone: '+998900000000',
+          displayName: 'Demo',
+        );
+        expect(user.roles, equals(<AccountRole>{AccountRole.consumer}));
       });
-      expect(decoded, isA<Admin>());
-      expect((decoded as Admin).role, equals(AdminRole.unknown));
+
+      test('assigns KycLevel.none by default', () {
+        const user = User(
+          id: 'u1',
+          phone: '+998900000000',
+          displayName: 'Demo',
+        );
+        expect(user.kycLevel, equals(KycLevel.none));
+      });
+
+      test('assigns isActive false by default', () {
+        const user = User(
+          id: 'u1',
+          phone: '+998900000000',
+          displayName: 'Demo',
+        );
+        expect(user.isActive, isFalse);
+      });
     });
 
-    test('pattern match reaches all variants', () {
-      String label(User u) => switch (u) {
-            Rider() => 'rider',
-            Driver() => 'driver',
-            Admin() => 'admin',
-          };
-      expect(label(const User.rider(id: '', phone: '', displayName: '')), 'rider');
-      expect(
-        label(const User.driver(id: '', phone: '', displayName: '', licenseNumber: '')),
-        'driver',
-      );
-      expect(label(const User.admin(id: '', email: '')), 'admin');
+    group('JSON round-trip', () {
+      test('survives serialization with all fields populated', () {
+        const user = User(
+          id: 'u1',
+          phone: '+998900000000',
+          displayName: 'Demo User',
+          email: 'demo@example.test',
+          avatarUrl: 'https://example.test/a.png',
+          roles: <AccountRole>{AccountRole.consumer, AccountRole.operator},
+          kycLevel: KycLevel.verified,
+          isActive: true,
+        );
+        final decoded = User.fromJson(user.toJson());
+        expect(decoded, equals(user));
+      });
+
+      test('survives serialization with only required fields', () {
+        const user = User(
+          id: 'u2',
+          phone: '+998911111111',
+          displayName: 'Minimal',
+        );
+        final decoded = User.fromJson(user.toJson());
+        expect(decoded, equals(user));
+      });
+    });
+
+    group('backend forward-compatibility', () {
+      test('decodes an unknown role to AccountRole.unknown', () {
+        final decoded = User.fromJson(<String, dynamic>{
+          'id': 'u3',
+          'phone': '+998922222222',
+          'display_name': 'Future Role',
+          'roles': <String>['consumer', 'galactic_pilot'],
+          'kyc_level': 'basic',
+          'is_active': true,
+        });
+        expect(
+          decoded.roles,
+          equals(<AccountRole>{AccountRole.consumer, AccountRole.unknown}),
+        );
+      });
+
+      test('decodes an unknown kycLevel to KycLevel.unknown', () {
+        final decoded = User.fromJson(<String, dynamic>{
+          'id': 'u4',
+          'phone': '+998933333333',
+          'display_name': 'Future KYC',
+          'roles': <String>['consumer'],
+          'kyc_level': 'quantum_verified',
+          'is_active': false,
+        });
+        expect(decoded.kycLevel, equals(KycLevel.unknown));
+      });
+    });
+
+    group('copyWith', () {
+      test('updates a single field without mutating the rest', () {
+        const original = User(
+          id: 'u5',
+          phone: '+998944444444',
+          displayName: 'Original',
+          kycLevel: KycLevel.basic,
+        );
+        final updated = original.copyWith(displayName: 'Updated');
+        expect(updated.displayName, equals('Updated'));
+        expect(updated.id, equals(original.id));
+        expect(updated.phone, equals(original.phone));
+        expect(updated.kycLevel, equals(KycLevel.basic));
+      });
+
+      test('replaces the roles set entirely', () {
+        const original = User(
+          id: 'u6',
+          phone: '+998955555555',
+          displayName: 'Role Swap',
+        );
+        final updated = original.copyWith(
+          roles: const <AccountRole>{AccountRole.operator, AccountRole.admin},
+        );
+        expect(
+          updated.roles,
+          equals(<AccountRole>{AccountRole.operator, AccountRole.admin}),
+        );
+      });
     });
   });
 }

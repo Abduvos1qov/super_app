@@ -1,5 +1,5 @@
 name: super_app_workspace
-description: Ride-hailing monorepo workspace root (not a publishable package).
+description: Super-app monorepo workspace root (not a publishable package).
 publish_to: none
 
 environment:
@@ -7,15 +7,13 @@ environment:
 
 workspace:
   - packages/core
+  - packages/mini_app_registry
+  - packages/mini_app_sdk
+  - packages/mini_apps/demo_mini_app
   - packages/shared_models
   - packages/shared_services
   - packages/shared_ui
-  - packages/feature_taxi
-  - packages/feature_food
-  - packages/feature_delivery
-  - packages/feature_driver
-  - apps/passenger_app
-  - apps/driver_app
+  - apps/super_app
 
 dev_dependencies:
   melos: ^7.5.0
